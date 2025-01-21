@@ -15,16 +15,8 @@ import {
   FormControl,
   FormLabel,
   useToast,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
   Text,
   Badge,
-  Flex
 } from '@chakra-ui/react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { videoService } from '../services/api'
@@ -37,7 +29,15 @@ function VideoPreview({ videoLink }: { videoLink: string }) {
     : videoLink.split('/').pop()
 
   return (
-    <Box position="relative" paddingBottom="56.25%" height="0" overflow="hidden" borderRadius="md">
+    <Box 
+      position="relative" 
+      width={{ base: "120px", md: "160px" }}
+      height={{ base: "68px", md: "90px" }}
+      overflow="hidden" 
+      borderRadius="md"
+      border="1px"
+      borderColor="gray.200"
+    >
       <iframe
         src={`https://www.youtube.com/embed/${videoId}`}
         style={{
@@ -59,8 +59,6 @@ export default function Dashboard() {
   const [videoLink, setVideoLink] = useState('')
   const [script, setScript] = useState('')
   const [videoId, setVideoId] = useState('')
-  const [selectedVideo, setSelectedVideo] = useState<Video | null>(null)
-  const { isOpen, onOpen, onClose } = useDisclosure()
   const toast = useToast()
   const queryClient = useQueryClient()
 
@@ -134,18 +132,13 @@ export default function Dashboard() {
     }
   }
 
-  const handleVideoClick = (video: Video) => {
-    setSelectedVideo(video)
-    onOpen()
-  }
-
   return (
     <DashboardLayout>
-      <VStack spacing={8} align="stretch">
-        <Box p={6} borderWidth={1} borderRadius="xl" bg="white" boxShadow="sm">
+      <VStack spacing={4} align="stretch">
+        <Box p={4} borderWidth={1} borderRadius="lg" bg="white" boxShadow="sm">
           <Text fontSize="xl" fontWeight="bold" mb={4}>Add New Video</Text>
           <form onSubmit={handleSubmit}>
-            <VStack spacing={4}>
+            <VStack spacing={4} align="stretch">
               <FormControl isRequired>
                 <FormLabel>Video Link</FormLabel>
                 <Input
@@ -161,6 +154,7 @@ export default function Dashboard() {
                   value={script}
                   onChange={(e) => setScript(e.target.value)}
                   placeholder="Enter video script"
+                  rows={4}
                 />
               </FormControl>
 
@@ -176,8 +170,7 @@ export default function Dashboard() {
               <Button
                 type="submit"
                 colorScheme="blue"
-                disabled={addVideoMutation.isPending}
-                width="full"
+                isLoading={addVideoMutation.isPending}
               >
                 Add Video
               </Button>
@@ -185,84 +178,59 @@ export default function Dashboard() {
           </form>
         </Box>
 
-        <Box overflowX="auto" bg="white" borderRadius="xl" boxShadow="sm">
+        <Box borderWidth={1} borderRadius="lg" bg="white" boxShadow="sm">
           <TableContainer>
-            <Table variant="simple">
+            <Table variant="simple" size="sm">
               <Thead bg="gray.50">
                 <Tr>
-                  <Th>Video ID</Th>
-                  <Th>Video Preview</Th>
-                  <Th>Script</Th>
-                  <Th>Created At</Th>
-                  <Th>Actions</Th>
+                  <Th width="15%">Video ID</Th>
+                  <Th width="25%">Video Preview</Th>
+                  <Th width="45%">Script</Th>
+                  <Th width="15%">Actions</Th>
                 </Tr>
               </Thead>
               <Tbody>
                 {isLoading ? (
                   <Tr>
-                    <Td colSpan={5}>
-                      <Flex justify="center" py={4}>
-                        <Text>Loading videos...</Text>
-                      </Flex>
+                    <Td colSpan={4} textAlign="center" py={4}>
+                      Loading videos...
                     </Td>
                   </Tr>
                 ) : videos?.length === 0 ? (
                   <Tr>
-                    <Td colSpan={5}>
-                      <Flex justify="center" py={4}>
-                        <Text color="gray.500">No videos found</Text>
-                      </Flex>
+                    <Td colSpan={4} textAlign="center" py={4}>
+                      No videos found
                     </Td>
                   </Tr>
-                ) : videos?.map((video: Video) => (
-                  <Tr key={video.id}>
-                    <Td>
-                      <Badge colorScheme="blue">{video.videoId}</Badge>
-                    </Td>
-                    <Td>
-                      <Button
-                        variant="link"
-                        colorScheme="blue"
-                        onClick={() => handleVideoClick(video)}
-                      >
-                        Preview Video
-                      </Button>
-                    </Td>
-                    <Td maxW="300px" isTruncated>{video.script}</Td>
-                    <Td>{new Date(video.createdAt!).toLocaleDateString()}</Td>
-                    <Td>
-                      <Button
-                        colorScheme="red"
-                        size="sm"
-                        onClick={() => handleDelete(video.id)}
-                        isLoading={deleteVideoMutation.isPending}
-                      >
-                        Delete
-                      </Button>
-                    </Td>
-                  </Tr>
-                ))}
+                ) : (
+                  videos?.map((video: Video) => (
+                    <Tr key={video.id}>
+                      <Td>
+                        <Badge colorScheme="blue">{video.videoId}</Badge>
+                      </Td>
+                      <Td>
+                        <VideoPreview videoLink={video.videoLink} />
+                      </Td>
+                      <Td>
+                        <Text noOfLines={2}>{video.script}</Text>
+                      </Td>
+                      <Td>
+                        <Button
+                          colorScheme="red"
+                          size="sm"
+                          onClick={() => handleDelete(video.id)}
+                          isLoading={deleteVideoMutation.isPending}
+                        >
+                          Delete
+                        </Button>
+                      </Td>
+                    </Tr>
+                  ))
+                )}
               </Tbody>
             </Table>
           </TableContainer>
         </Box>
-
-        <Modal isOpen={isOpen} onClose={onClose} size="xl">
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Video Preview</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody pb={6}>
-              {selectedVideo && (
-                <VStack spacing={4}>
-                  <VideoPreview videoLink={selectedVideo.videoLink} />
-                  <Text fontWeight="bold">Script:</Text>
-                  <Text>{selectedVideo.script}</Text>
-                </VStack>
-              )}
-            </ModalBody>
-          </ModalContent>
-        </Modal>
       </VStack>
     </DashboardLayout>
   )

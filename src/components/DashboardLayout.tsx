@@ -1,4 +1,4 @@
-import { Box, Flex, Button, Heading, useToast, Container } from '@chakra-ui/react'
+import { Box, Flex, Button, Heading, useToast } from '@chakra-ui/react'
 import { useAuth } from '../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
 
@@ -37,7 +37,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         zIndex="sticky"
         boxShadow="sm"
       >
-        <Container maxW="container.xl" display="flex" justifyContent="space-between">
+        <Flex w="100%" maxW="1280px" mx="auto" px={4} align="center" justify="space-between">
           <Heading size="lg" color="blue.600">Admin Dashboard</Heading>
           <Button
             onClick={handleSignOut}
@@ -47,11 +47,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           >
             Sign Out
           </Button>
-        </Container>
+        </Flex>
       </Flex>
-      <Container maxW="container.xl" py={8}>
+      <Box maxW="1280px" mx="auto" p={4} w="100%">
         {children}
-      </Container>
+      </Box>
     </Box>
   )
 } 
