@@ -27,8 +27,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <Flex
         as="nav"
         align="center"
-        justify="space-between"
-        padding="4"
         bg="white"
         borderBottom="1px"
         borderColor="gray.200"
@@ -36,20 +34,24 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         top="0"
         zIndex="sticky"
         boxShadow="sm"
+        h="16"
+        px={4}
       >
-        <Flex w="100%" maxW="1280px" mx="auto" px={4} align="center" justify="space-between">
-          <Heading size="lg" color="blue.600">Admin Dashboard</Heading>
-          <Button
-            onClick={handleSignOut}
-            colorScheme="blue"
-            variant="outline"
-            size="md"
-          >
-            Sign Out
-          </Button>
-        </Flex>
+        <Box w="100%" maxW="1400px" mx="auto">
+          <Flex align="center" justify="space-between">
+            <Heading size="lg" color="blue.600">Admin Dashboard</Heading>
+            <Button
+              onClick={handleSignOut}
+              colorScheme="blue"
+              variant="outline"
+              size="md"
+            >
+              Sign Out
+            </Button>
+          </Flex>
+        </Box>
       </Flex>
-      <Box maxW="1280px" mx="auto" p={4} w="100%">
+      <Box maxW="1400px" mx="auto" p={4}>
         {children}
       </Box>
     </Box>

@@ -31,8 +31,8 @@ function VideoPreview({ videoLink }: { videoLink: string }) {
   return (
     <Box 
       position="relative" 
-      width={{ base: "120px", md: "160px" }}
-      height={{ base: "68px", md: "90px" }}
+      width="180px"
+      height="100px"
       overflow="hidden" 
       borderRadius="md"
       border="1px"
@@ -134,11 +134,17 @@ export default function Dashboard() {
 
   return (
     <DashboardLayout>
-      <VStack spacing={4} align="stretch">
-        <Box p={4} borderWidth={1} borderRadius="lg" bg="white" boxShadow="sm">
-          <Text fontSize="xl" fontWeight="bold" mb={4}>Add New Video</Text>
+      <VStack spacing={6} align="stretch">
+        <Box 
+          p={6} 
+          borderWidth={1} 
+          borderRadius="lg" 
+          bg="white" 
+          boxShadow="sm"
+        >
+          <Text fontSize="xl" fontWeight="bold" mb={6}>Add New Video</Text>
           <form onSubmit={handleSubmit}>
-            <VStack spacing={4} align="stretch">
+            <VStack spacing={4} align="stretch" maxW="800px">
               <FormControl isRequired>
                 <FormLabel>Video Link</FormLabel>
                 <Input
@@ -170,6 +176,7 @@ export default function Dashboard() {
               <Button
                 type="submit"
                 colorScheme="blue"
+                size="lg"
                 isLoading={addVideoMutation.isPending}
               >
                 Add Video
@@ -179,14 +186,14 @@ export default function Dashboard() {
         </Box>
 
         <Box borderWidth={1} borderRadius="lg" bg="white" boxShadow="sm">
-          <TableContainer>
-            <Table variant="simple" size="sm">
+          <TableContainer whiteSpace="normal">
+            <Table variant="simple">
               <Thead bg="gray.50">
                 <Tr>
-                  <Th width="15%">Video ID</Th>
-                  <Th width="25%">Video Preview</Th>
-                  <Th width="45%">Script</Th>
-                  <Th width="15%">Actions</Th>
+                  <Th width="100px">Video ID</Th>
+                  <Th width="200px">Video Preview</Th>
+                  <Th>Script</Th>
+                  <Th width="100px" textAlign="center">Actions</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -206,15 +213,29 @@ export default function Dashboard() {
                   videos?.map((video: Video) => (
                     <Tr key={video.id}>
                       <Td>
-                        <Badge colorScheme="blue">{video.videoId}</Badge>
+                        <Badge colorScheme="blue">
+                          {video.videoId}
+                        </Badge>
                       </Td>
                       <Td>
                         <VideoPreview videoLink={video.videoLink} />
                       </Td>
-                      <Td>
-                        <Text noOfLines={2}>{video.script}</Text>
+                      <Td sx={{
+                        maxWidth: "800px",
+                        whiteSpace: "pre-wrap",
+                        wordBreak: "break-word",
+                        verticalAlign: "top",
+                        py: 4
+                      }}>
+                        <Text 
+                          fontSize="sm"
+                          color="gray.700"
+                          lineHeight="1.6"
+                        >
+                          {video.script}
+                        </Text>
                       </Td>
-                      <Td>
+                      <Td textAlign="center">
                         <Button
                           colorScheme="red"
                           size="sm"
